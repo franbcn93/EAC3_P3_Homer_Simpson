@@ -18,3 +18,5 @@ E) Feu que l’ull d’en Homer (ull.png) roti sobre si mateix entre 50 graus i 
 
 F) Reproduïu àudio a l’animació: feu que soni el fitxer d’audio [the_simpson.mp3] quan es faci click sobre el donut i no 
 està sonant. Si està sonant i es fa click a sobre el donut, llavors es pari la música.
+
+![image](https://user-images.githubusercontent.com/24720815/68109025-d8399c00-fee9-11e9-9483-355ec6a75bf8.png)
