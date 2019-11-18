@@ -2,12 +2,16 @@ package franciscoparisalbero.ioc.eac3_p3_paris_fran;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.content.Intent;
 import android.graphics.Matrix;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.nfc.Tag;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -17,8 +21,11 @@ import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 
+import static android.view.animation.Animation.*;
+
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "1 ";
     ImageView imatgeTitol, imatgeTitol_1, imatgeTitol_2, imatgeBlau,
             imatgeVermell, imatgeUll, imatgeDonut, imatgeVerd;
     MediaPlayer mdp;
@@ -28,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         imatgeTitol = findViewById(R.id.imageTittle);
         imatgeTitol_1 = findViewById(R.id.imageTittle_1);
@@ -39,6 +48,13 @@ public class MainActivity extends AppCompatActivity {
         imatgeUll = findViewById(R.id.imageEyes);
         imatgeVerd = findViewById(R.id.imageGreen);
         mdp = MediaPlayer.create(MainActivity.this,R.raw.the_simpsons);
+
+        ImageView[] IMGS = { imatgeBlau, imatgeVermell,
+                imatgeVerd, imatgeDonut, imatgeUll};
+
+        for (int i=0; i< IMGS.length; i++){
+            IMGS[i].setVisibility(View.INVISIBLE);
+        }
 
         //Fem una animació amb les imatges que volem exposar
         AnimationDrawable animation = new AnimationDrawable();
@@ -54,17 +70,27 @@ public class MainActivity extends AppCompatActivity {
         animation.start();
 
         //Al clickar al titol, crea un Array i mostra les imatges que falten per mostrar
+        // Si les imatges ja son visibles les amaga
         imatgeTitol.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 ImageView[] IMGS = { imatgeBlau, imatgeVermell,
-                                    imatgeVerd, imatgeDonut, imatgeUll};
+                        imatgeVerd, imatgeDonut, imatgeUll};
 
                 for (int i = 0; i < IMGS.length; i++) {
-                    (IMGS[i]).setVisibility(View.VISIBLE);
+                    if (IMGS[i].getVisibility() == View.VISIBLE){
+                        IMGS[i].clearAnimation();
+                        IMGS[i].setVisibility(View.INVISIBLE);
+                    }else{
+                        IMGS[i].setVisibility(View.VISIBLE);
+                        //Animem les imatges
+                        rotateImage(IMGS);
+                        rotateDonut();
+                        rotateImage(imatgeUll);
+                    }
                 }
-                rotateImage(IMGS);
+//                rotateImage(IMGS);
             }
         });
 
@@ -72,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
         imatgeDonut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if(mdp.isPlaying() == true)
                     // Pause the music player
                     mdp.pause();
@@ -82,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
                     mdp.start();
             }
         });
-
     }
 
     //Si la activitat està parcialment o completament ocult,
@@ -102,49 +126,26 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         if(musica == true)
             mdp.start();
-
     }
 
     //rotateImage agafa l'array de la ImageView i fa l'animació de donar voltes sobre
     // si mateixa de forma indefinida
     private void rotateImage(ImageView[] IMGS){
-
         //Agafem l'Array del ImageView i no agafem la imatge de l'ull i donut
         for (int i = 0; i < IMGS.length-2; i++) {
             RotateAnimation rotate = new RotateAnimation(0, 360,
-            Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            RELATIVE_TO_SELF, 0.5f, RELATIVE_TO_SELF, 0.5f);
             rotate.setDuration(4000);
-            rotate.setRepeatCount(Animation.INFINITE);
+            rotate.setRepeatCount(INFINITE);
             (IMGS[i]).startAnimation(rotate);
         }
-        rotateDonut();
-        rotateImage(imatgeUll);
     }
 
-    // La imatge puja i baixa de dalt a baix de la pantalla
+    // La imatge puja i baixa de dalt a baix de la pantalla i rota al mateix temps
     private void rotateDonut() {
 
-        AnimationSet animationSet = new AnimationSet(true);
-
-        TranslateAnimation a = new TranslateAnimation(
-                Animation.RELATIVE_TO_SELF,0f,
-                Animation.RELATIVE_TO_SELF,0f,
-                Animation.RELATIVE_TO_PARENT,0f,
-                Animation.RELATIVE_TO_PARENT, 0.8f);
-        a.setDuration(4000);
-        a.setRepeatCount(Animation.INFINITE);
-        a.setRepeatMode(Animation.REVERSE);
-
-        RotateAnimation rotate = new RotateAnimation(0, 360,
-                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotate.setDuration(4000);
-        rotate.setRepeatCount(Animation.INFINITE);
-
-
-        animationSet.addAnimation(a);
-//        animationSet.addAnimation(rotate);
-        imatgeDonut.startAnimation(animationSet);
-
+        Animation animacio = AnimationUtils.loadAnimation(this,R.anim.rotacio_donut);
+        imatgeDonut.startAnimation(animacio);
 
     }
 
@@ -157,8 +158,8 @@ public class MainActivity extends AppCompatActivity {
                 RotateAnimation.RELATIVE_TO_SELF, 0.5f);
 
         animation.setDuration(4000);
-        animation.setRepeatCount(Animation.INFINITE);
-        animation.setRepeatMode(Animation.REVERSE);
+        animation.setRepeatCount(INFINITE);
+        animation.setRepeatMode(REVERSE);
         imageView.startAnimation(animation);
 
     }
