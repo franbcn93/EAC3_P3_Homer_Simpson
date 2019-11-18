@@ -25,7 +25,6 @@ import static android.view.animation.Animation.*;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "1 ";
     ImageView imatgeTitol, imatgeTitol_1, imatgeTitol_2, imatgeBlau,
             imatgeVermell, imatgeUll, imatgeDonut, imatgeVerd;
     MediaPlayer mdp;
@@ -56,18 +55,8 @@ public class MainActivity extends AppCompatActivity {
             IMGS[i].setVisibility(View.INVISIBLE);
         }
 
-        //Fem una animació amb les imatges que volem exposar
-        AnimationDrawable animation = new AnimationDrawable();
-        animation.addFrame(getResources().getDrawable(R.drawable.simpsons_0), 30);
-        animation.addFrame(getResources().getDrawable(R.drawable.simpsons_1), 30);
-        animation.addFrame(getResources().getDrawable(R.drawable.simpsons_2), 30);
-        animation.setOneShot(false);
-
-        ImageView imageAnim =  (ImageView) findViewById(R.id.imageTittle);
-        imageAnim.setBackgroundDrawable(animation);
-
-        // Iniciem l'animació
-        animation.start();
+        //Passem les imatges que volem exposar cada x milisegons
+        imatgesTitol();
 
         //Al clickar al titol, crea un Array i mostra les imatges que falten per mostrar
         // Si les imatges ja son visibles les amaga
@@ -109,6 +98,19 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //Fem una animació amb les imatges que volem exposar
+    private void imatgesTitol() {
+        AnimationDrawable animation = new AnimationDrawable();
+        animation.addFrame(getResources().getDrawable(R.drawable.simpsons_0), 30);
+        animation.addFrame(getResources().getDrawable(R.drawable.simpsons_1), 30);
+        animation.addFrame(getResources().getDrawable(R.drawable.simpsons_2), 30);
+        animation.setOneShot(false);
+        ImageView imageAnim =  (ImageView) findViewById(R.id.imageTittle);
+        imageAnim.setBackgroundDrawable(animation);
+        // Iniciem l'animació
+        animation.start();
+    }
+
     //Si la activitat està parcialment o completament ocult,
     // la música que estava sonant, es para
     @Override
@@ -117,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         if(mdp.isPlaying() == true)
             // Pause the music player
             mdp.pause();
-            musica=true; //recordarem si estava sonant la música
+        musica=true; //recordarem si estava sonant la música
     }
 
     //Si tormen a l'activitat principal i la cançó estava sonant, es reanuda
@@ -134,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
         //Agafem l'Array del ImageView i no agafem la imatge de l'ull i donut
         for (int i = 0; i < IMGS.length-2; i++) {
             RotateAnimation rotate = new RotateAnimation(0, 360,
-            RELATIVE_TO_SELF, 0.5f, RELATIVE_TO_SELF, 0.5f);
+                    RELATIVE_TO_SELF, 0.5f, RELATIVE_TO_SELF, 0.5f);
             rotate.setDuration(4000);
             rotate.setRepeatCount(INFINITE);
             (IMGS[i]).startAnimation(rotate);
@@ -156,11 +158,9 @@ public class MainActivity extends AppCompatActivity {
         RotateAnimation animation = new RotateAnimation(50, -50,
                 RotateAnimation.RELATIVE_TO_SELF, 0.5f,
                 RotateAnimation.RELATIVE_TO_SELF, 0.5f);
-
         animation.setDuration(4000);
         animation.setRepeatCount(INFINITE);
         animation.setRepeatMode(REVERSE);
         imageView.startAnimation(animation);
-
     }
 }
